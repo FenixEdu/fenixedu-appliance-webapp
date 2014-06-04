@@ -1,12 +1,16 @@
-*.class
+target/
+.settings/
+jetty/
+deploy/
+configuration.properties
+fenix-framework.properties
+output/
+.classpath
+.project
+build.properties.fenixIST
+build.properties.local
+build.properties.slave
+configuration.properties.fenix
+configuration.properties.localhost
 
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
-
-# Package Files #
-*.jar
-*.war
-*.ear
-
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
-hs_err_pid*
+/target
