@@ -32,9 +32,8 @@
 				<artifactId>tomcat7-maven-plugin</artifactId>
 				<version>2.2</version>
 				<configuration>
-					<path>/fenix</path>
-					<port>8080</port>
-					<warSourceDirectory>../fenix/src/main/webapp</warSourceDirectory>
+					<path>/</path>
+					<port>80</port>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -46,20 +45,23 @@
 					<meminitial>1024</meminitial>
 				</configuration>
 			</plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.1.1</version>
+                <configuration>
+                    <failOnMissingWebXml>false</failOnMissingWebXml>
+                </configuration>
+            </plugin>
 			<plugin>
 				<groupId>org.fenixedu</groupId>
 				<artifactId>bennu-maven-plugin</artifactId>
 				<version>${version.org.fenixedu.bennu}</version>
-			</plugin>
+            </plugin>
 		</plugins>
 	</build>
 
 	<dependencies>
-		<dependency>
-			<groupId>org.fenixedu</groupId>
-			<artifactId>bennu-renderers</artifactId>
-			<version>${version.org.fenixedu.bennu.renderers}</version>
-		</dependency>
 		<dependency>
 			<groupId>pt.ist</groupId>
 			<artifactId>fenix</artifactId>
@@ -71,6 +73,11 @@
 			<version>${version.pt.ist.fenix.ist}</version>
 		</dependency>
 		<dependency>
+			<groupId>org.fenixedu</groupId>
+			<artifactId>bennu-renderers</artifactId>
+			<version>${version.org.fenixedu.bennu.renderers}</version>
+		</dependency>
+		<dependency>
 			<groupId>commons-logging</groupId>
 			<artifactId>commons-logging</artifactId>
 			<version>1.1.1</version>
@@ -80,11 +87,6 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>jcl-over-slf4j</artifactId>
 			<version>1.7.5</version>
-		</dependency>
-		<dependency>
-			<groupId>net.logstash.logback</groupId>
-			<artifactId>logstash-logback-encoder</artifactId>
-			<version>1.3</version>
 		</dependency>
 		<dependency>
 			<groupId>org.fenixedu</groupId>
@@ -117,42 +119,11 @@
 			<version>${version.org.fenixedu.bennu}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.fenixedu</groupId>
-			<artifactId>fenixedu-id-cards</artifactId>
-			<version>${version.org.fenixedu.id.cards}</version>
-		</dependency>
-		<dependency>
 			<groupId>org.glassfish.jersey.containers</groupId>
 			<artifactId>jersey-container-servlet</artifactId>
 			<version>2.9</version>
 		</dependency>
 	</dependencies>
-
-	<profiles>
-		<profile>
-			<id>SQLUpdateGenerator</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>exec-maven-plugin</artifactId>
-						<version>1.2.1</version>
-						<executions>
-							<execution>
-								<phase>test</phase>
-								<goals>
-									<goal>java</goal>
-								</goals>
-								<configuration>
-									<mainClass>pt.ist.fenix.webapp.SQLUpdateGeneratorMain</mainClass>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
 
 	<repositories>
 		<repository>
