@@ -190,6 +190,7 @@ public class FenixEduApplianceBootstrapper {
 
         MenuContainer root = PortalConfiguration.getInstance().getMenu();
 
+        PortalConfiguration.getInstance().setTheme("ashes");
         for (MenuItem item : root.getOrderedChild()) {
             if (item.isMenuContainer()) {
                 item.delete();
