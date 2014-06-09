@@ -167,11 +167,15 @@ import org.fenixedu.bennu.portal.model.Application;
 import org.fenixedu.bennu.portal.model.ApplicationRegistry;
 import org.fenixedu.commons.i18n.LocalizedString;
 import org.fenixedu.idcards.ui.IdCardsApp;
+import org.fenixedu.spaces.domain.MetadataSpec;
+import org.fenixedu.spaces.domain.SpaceClassification;
 import org.fenixedu.spaces.ui.SpacesController;
 
 import pt.utl.ist.codeGenerator.database.FenixBootstrapper;
 
+import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Multimap;
 
 @Bootstrapper(sections = {}, name = "bootstrapper.name", bundle = BundleUtil.APPLICATION_BUNDLE, after = FenixBootstrapper.class)
 public class FenixEduApplianceBootstrapper {
@@ -179,18 +183,77 @@ public class FenixEduApplianceBootstrapper {
     final static Locale PT = new Locale("pt");
     final static Locale EN = new Locale("en");
 
+    static Multimap<String, MetadataSpec> codeToMetadataSpecMap;
+
     @Bootstrap
     public static List<BootstrapError> boostrap() {
 
         installMenus();
+        initSpaces();
         return Lists.newArrayList();
+    }
+
+    private static void initSpaces() {
+        initMetadataSpecMap();
+        initSpaceTypes();
+    }
+
+    private static void initMetadataSpecMap() {
+        codeToMetadataSpecMap = HashMultimap.create();
+        codeToMetadataSpecMap.put(
+                "Room",
+                new MetadataSpec("ageQualitity", new LocalizedString.Builder().with(PT, "Qualidade em idade")
+                        .with(EN, "Age Quality").build(), java.lang.Boolean.class, true, "false"));
+        codeToMetadataSpecMap
+                .put("Room",
+                        new MetadataSpec("distanceFromSanitaryInstalationsQuality", new LocalizedString.Builder()
+                                .with(EN, "Qualidade na distância às instalações sanitárias")
+                                .with(EN, "Distance From Sanitary Instalations Quality").build(), java.lang.Boolean.class, true,
+                                "false"));
+        codeToMetadataSpecMap.put(
+                "Room",
+                new MetadataSpec("heightQuality", new LocalizedString.Builder().with(PT, "Qualidade em altura")
+                        .with(EN, "Height Quality").build(), java.lang.Boolean.class, true, "false"));
+        codeToMetadataSpecMap.put(
+                "Room",
+                new MetadataSpec("illuminationQuality", new LocalizedString.Builder().with(PT, "Qualidade em iluminação")
+                        .with(EN, "Illumination Quality").build(), java.lang.Boolean.class, true, "false"));
+        codeToMetadataSpecMap.put(
+                "Room",
+                new MetadataSpec("securityQuality", new LocalizedString.Builder().with(PT, "Qualidade em segurança")
+                        .with(EN, "Security Quality").build(), java.lang.Boolean.class, true, "false"));
+        codeToMetadataSpecMap.put("Room", new MetadataSpec("doorNumber", new LocalizedString.Builder().with(PT, "Número Porta")
+                .with(EN, "Door Number").build(), java.lang.String.class, false, ""));
+        codeToMetadataSpecMap.put("Floor",
+                new MetadataSpec("level", new LocalizedString.Builder().with(PT, "Piso").with(EN, "Level").build(),
+                        java.lang.Integer.class, true, "0"));
+
+    }
+
+    public static void initSpaceTypes() {
+        final String[] en = new String[] { "Campus", "Room Subdivision", "Building", "Floor" };
+        final String[] pt = new String[] { "Campus", "Subdivisão de Sala", "Edifício", "Piso" };
+        final String[] codes = new String[] { "1", "2", "3", "4" };
+
+        for (int i = 0; i < codes.length; i++) {
+            String name_EN = en[i];
+            String name_PT = pt[i];
+            String code = codes[i];
+            create(null, name_EN, name_PT, code);
+        }
+    }
+
+    public static void create(SpaceClassification parent, String name_EN, String name_PT, String code) {
+        final LocalizedString name = new LocalizedString.Builder().with(PT, name_PT).with(EN, name_EN).build();
+        final SpaceClassification spaceClassification = new SpaceClassification(code, name, parent, null);
+        spaceClassification.setMetadataSpecs(codeToMetadataSpecMap.get(code));
     }
 
     private static void installMenus() {
 
+        PortalConfiguration.getInstance().setTheme("ashes");
         MenuContainer root = PortalConfiguration.getInstance().getMenu();
 
-        PortalConfiguration.getInstance().setTheme("ashes");
         for (MenuItem item : root.getOrderedChild()) {
             if (item.isMenuContainer()) {
                 item.delete();
@@ -359,7 +422,7 @@ public class FenixEduApplianceBootstrapper {
 
         {
             install(make(root, RoleType.WEBSITE_MANAGER, "Gestão do Website", "Website Manager"), ListSitesAction.class)
-            .setLayout("one-col");
+                    .setLayout("one-col");
         }
 
         {
